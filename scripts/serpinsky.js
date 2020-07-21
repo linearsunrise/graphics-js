@@ -22,36 +22,38 @@ const clearFrame = () => {
 
 let x = width / 2;
 let y = height / 2;
-let scl = 350;
+let scl = width / 4;
+
+const polygon = (a) => {
+    const matr = Array.from(Array(a).keys());
+    const init = matr.map(
+        (n) => [
+            -Math.sin(2 * n / matr.length * Math.PI) * scl + x,
+            -Math.cos(2 * n / matr.length * Math.PI) * scl + y]
+    );
+    return init;
+}
+
+const findHalf = ([[x1, y1], [x2, y2]], ch = 0) => {
+    if (ch === 0) {
+        return [(x2 + x1) / 2, (y2 + y1) / 2]
+    } else {
+        return [(x2 - x1) / 2 + x, (y2 - y1) / 2 + y]
+    }
+};
+
+
 let angles = 5;
-
-const matr = Array.from(Array(angles).keys());
-
-const polygon = matr.map(
-    (n) => [
-        -Math.sin(2 * n / matr.length * Math.PI) * scl + x,
-        -Math.cos(2 * n / matr.length * Math.PI) * scl + y]
-);
-
-// const polygon = [
-//     [0,0],
-//     [0,height],
-//     [width,0],
-//     [width,height]]
-
-const findHalf = ([[x1, y1], [x2, y2]]) => [(x2 + x1) / 2, (y2 + y1) / 2];
-// const findHalf = ([[x1, y1], [x2, y2]]) => [(x2 - x1) / 2 + x, (y2 - y1) / 2 + y]
-
-// polygon.map(([i, j]) => { circle([i, j], 1) });
-
-let couples = polygon;
+let state = 0;
+let points = polygon(angles);
+let couples = points;
 let j
 
 const draw = (w = 0) => {
     // clearFrame()
     for (let i = 0; i < 3000; i++) {
-        j = Math.floor(Math.random() * polygon.length);
-        couples = [findHalf(couples), polygon[j]];
+        j = Math.floor(Math.random() * points.length);
+        couples = [findHalf(couples, state), points[j]];
         circle(couples[0], 1);
     }
 }
@@ -59,3 +61,24 @@ const draw = (w = 0) => {
 draw();
 let i = 0;
 setInterval(() => draw(i += 60 / 1000), 1000 / 60);
+
+document.addEventListener('keyup', (e) => {
+    ctx.fillStyle = '#202020';
+    ctx.fillRect(0, 0, width, height);
+    switch (e.keyCode) {
+        case 38:
+            angles++;
+            break;
+        case 40:
+            angles > 3 ? angles-- : angles = 3;
+            break;
+        case 39:
+            state = 0;
+            break;
+        case 37:
+            state = 1;
+            break;
+    }
+    console.log('amount of points is: ', angles)
+    points = polygon(angles);
+})
