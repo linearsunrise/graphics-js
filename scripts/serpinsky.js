@@ -44,7 +44,7 @@ const findHalf = ([[x1, y1], [x2, y2]], ch = 0) => {
 
 
 let angles = 5;
-let state = 0;
+let pattern = 0;
 let points = polygon(angles);
 let couples = points;
 let j
@@ -53,7 +53,7 @@ const draw = (w = 0) => {
     // clearFrame()
     for (let i = 0; i < 3000; i++) {
         j = Math.floor(Math.random() * points.length);
-        couples = [findHalf(couples, state), points[j]];
+        couples = [findHalf(couples, pattern), points[j]];
         circle(couples[0], 1);
     }
 }
@@ -73,10 +73,10 @@ document.addEventListener('keyup', (e) => {
             angles > 3 ? angles-- : angles = 3;
             break;
         case 39:
-            state = 0;
+            pattern = 0;
             break;
         case 37:
-            state = 1;
+            pattern = 1;
             break;
     }
     console.log('amount of points is: ', angles)
