@@ -9,14 +9,22 @@ canvas.width = width
 canvas.height = height
 
 const circle = ([x, y], r) => {
-    ctx.fillStyle = "#FFFFFF10";
+    ctx.fillStyle = "#FFFFFFC0";
     ctx.beginPath();
     ctx.arc(x, y, r, 0, 2 * Math.PI);
     ctx.fill();
 }
 
-const clearFrame = () => {
-    ctx.clearRect(0, 0, width, height);
+const clearFrame = (amount) => {
+    // ctx.clearRect(0, 0, width, height);
+    ctx.save();
+    
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.fillStyle = `rgba(0, 0, 0, ${amount})`; // e.g., 0.1 to fade out 10%
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    ctx.restore();
+    
 }
 
 
@@ -50,7 +58,7 @@ let couples = points;
 let j
 
 const draw = (w = 0) => {
-    // clearFrame()
+    clearFrame(0.02)
     for (let i = 0; i < 3000; i++) {
         j = Math.floor(Math.random() * points.length);
         couples = [findHalf(couples, pattern), points[j]];
@@ -63,8 +71,8 @@ let i = 0;
 setInterval(() => draw(i += 60 / 1000), 1000 / 60);
 
 document.addEventListener('keyup', (e) => {
-    ctx.fillStyle = '#202020';
-    ctx.fillRect(0, 0, width, height);
+    clearFrame(1)
+
     switch (e.keyCode) {
         case 38:
             angles++;
@@ -79,6 +87,5 @@ document.addEventListener('keyup', (e) => {
             pattern = 1;
             break;
     }
-    console.log('amount of points is: ', angles)
     points = polygon(angles);
 })
